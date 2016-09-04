@@ -1,7 +1,7 @@
 import operator
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
-from models import arXiv, CrossRef, JournalTOC
+from models import CrossRef, JournalTOC #arXiv not in use for now
 
 def index(request):
     words = request.GET.getlist('words')[0]
