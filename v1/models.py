@@ -1,146 +1,78 @@
 from __future__ import unicode_literals
 from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
 
-# Create your models here.
-import feedparser
-import requests
-import json
-#import urllib
 
-class arXiv(object):
+@python_2_unicode_compatible
+class Contacts(models.Model):
     """
+    only saves searches if consent given by user, otherwise no way to tell
     """
-    def __init__(self, keywords):
-        self.keywords = keywords
-        self.results = []
-        self.base = 'http://export.arxiv.org/api/query?'
-        self.limit = 10
-        self.url = ''
 
-    def getarxiv(self):
-        query = 'all:' + self.keywords
-        params = {'search_query': query, 'max_results': self.limit}
-        response = requests.get(self.base, params=params)
-        self.url = response.url
-        rssdoc = feedparser.parse(response.content)
-        for i in rssdoc.get('entries'):
-            url = i.get('link')
-            title = i.get('title')
-            dateall = str(i.get('published'))
-            date = dateall[:10]
-            result = {'type': 'journal-article',
-                        'date': date,
-                        'title': title,
-                        'url': url,
-                        'source': 'arxiv'}
-            if self.keywords.lower() not in result.get('title').lower():
-                continue
-            else:
-                self.results.append(result)
-        return self.results
+    uuid = models.CharField(max_length=36, unique=True, db_index=True)
+    subject_pref = models.TextField()
+    journal_pref = models.TextField()
+
+    search1 = models.TextField()
+    search1_date = models.DateTimeField()
+    search2 = models.TextField()
+    search2_date = models.DateTimeField()
+    search3 = models.TextField()
+    search3_date = models.DateTimeField()
+
+    def __str__(self):
+        return (self.uuid,
+                self.subject_pref,
+                self.journal_pref,
+                self.search1,
+                self.search1_date,
+                self.search2,
+                self.search2_date,
+                self.search3,
+                self.search3_date)
 
 
-#tests
-# test = 'Neural networks'
-# z = arXiv(test)
-# print z.getarxiv()
-# print z.url, z.keywords, z.results
+@python_2_unicode_compatible
+class Journals(models.Model):
+
+    name = models.TextField()
+    subject = models.TextField()
+
+    def __str__(self):
+        return self.name, self.subject
 
 
-class CrossRef(object):
-    """
-    bdmj: book, dissertation, monograph, journal-article, book-chapter, 20 queries max in one go
-    """
-    def __init__(self, cat, since, keywords):
-        self.cat = cat
-        self.since = since
-        self.keywords = keywords
-        self.results = []
-        self.base = 'http://api.crossref.org/works?'
-        self.limit = 10
-        self.url = ''
+@python_2_unicode_compatible
+class SearchCrossRef(models.Model):
 
-    def getcrossref(self):
-        #addurl = urllib.pathname2url(keywords) #alternative approach to building query.
-        payload = {'query.title': self.keywords,
-                    'filter': 'type:{bdmj},from-pub-date:{date}'.format(bdmj = self.cat, date = self.since),
-                    'rows': self.limit}
+    keywords = models.TextField()
+    result_url = models.TextField()
+    result_doi = models.TextField()
+    pubdate = models.DateTimeField()
 
-        # payload = {'query.title': '\"{key}\"'.format(key = addurl),
-        #             'filter': 'type:{bdmj},from-pub-date:{date}'.format(bdmj = cat, date = since),
-        #             'rows': 20}
+    def __str__(self):
+        return self.keywords, self.result_url, self.result_doi, self.pubdate
 
-        x = requests.get(self.base, params=payload)
-        self.url = x.url
-        xdict = x.json()
-        for i in xdict.get('message').get('items'):
-            url = i.get('URL')
-            title = i.get('title')[0]
-            # for books, but not really needed otherwise
-            # try:
-            #     subtitle  = i.get('subtitle')[0]
-            #     fulltitle = title + ': ' + subtitle
-            # except:
-            #     fulltitle = title
-            dateall = str(i.get('deposited').get('date-time'))
-            date = dateall[:10]
-            typeof = i.get('type')
-            result = {'type': typeof,
-                        'date': date,
-                        'title': title,
-                        'url': url,
-                        'source': 'crossref'} #fulltitle for title issue
-            if self.keywords.lower() not in result.get('title').lower():
-                continue
-            else:
-                self.results.append(result)
-        return self.results
 
-#tests
-# stuff = 'journal-article'
-# when = '2015-01'
-# test = 'cold war'
-# z = CrossRef(stuff, when, test)
-# print z.getcrossref()
-# print z.url
+@python_2_unicode_compatible
+class SearchJToC(models.Model):
 
-class JournalTOC(object):
-    """
-    no category - journal articles only, to= is limit, max is 300; no timeframe - just the most recent
-    """
-    def __init__(self,keywords):
-        self.keywords = keywords
-        self.results = []
-        self.base = 'http://www.journaltocs.ac.uk/api/articles/'
-        self.limit = 10
+    keywords = models.TextField()
+    result_url = models.TextField()
+    result_doi = models.TextField()
+    pubdate = models.DateTimeField()
 
-    def getjournaltoc(self):
-        params = {'to': self.limit}
-        url0 = '%s%s' % (self.base, self.keywords)
-        response = requests.get(url0, params=params)
-        self.url = response.url
-        rssdoc = feedparser.parse(response.content)
-        for i in rssdoc.get('entries'):
-            url = i.get('link')
-            title = i.get('title')
-            if str(i.get('date')) == 'None':
-                dateall = ''
-            else:
-                dateall = str(i.get('date'))
-            date = dateall[:10]
-            result = {'type': 'journal-article',
-                        'date': date,
-                        'title': title,
-                        'url': url,
-                        'source': 'journaltoc'}
-            if self.keywords.lower() not in result.get('title').lower():
-                continue
-            else:
-                self.results.append(result)
-        return self.results
+    def __str__(self):
+        return self.keywords, self.result_url, self.result_doi, self.pubdate
 
-#tests
-# test = 'Neural networks'
-# z = JournalTOC(test)
-# print z.getjournaltoc()
-# print z.url, z.keywords
+
+@python_2_unicode_compatible
+class SearchArXiv(models.Model):
+
+    keywords = models.TextField()
+    result_url = models.TextField()
+    result_doi = models.TextField()
+    pubdate = models.DateTimeField()
+
+    def __str__(self):
+        return self.keywords, self.result_url, self.result_doi, self.pubdate
