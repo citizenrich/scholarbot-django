@@ -6,7 +6,7 @@ from django.utils.encoding import python_2_unicode_compatible
 @python_2_unicode_compatible
 class Contacts(models.Model):
     """
-    only saves searches if consent given by user, otherwise no way to tell
+    up to 3 custom searches can be saved
     """
 
     uuid = models.CharField(max_length=36, unique=True, db_index=True)
@@ -32,47 +32,13 @@ class Contacts(models.Model):
                 self.search3_date)
 
 
-@python_2_unicode_compatible
-class Journals(models.Model):
-
-    name = models.TextField()
-    subject = models.TextField()
-
-    def __str__(self):
-        return self.name, self.subject
-
-
-@python_2_unicode_compatible
-class SearchCrossRef(models.Model):
-
-    keywords = models.TextField()
-    result_url = models.TextField()
-    result_doi = models.TextField()
-    pubdate = models.DateTimeField()
-
-    def __str__(self):
-        return self.keywords, self.result_url, self.result_doi, self.pubdate
-
-
-@python_2_unicode_compatible
-class SearchJToC(models.Model):
-
-    keywords = models.TextField()
-    result_url = models.TextField()
-    result_doi = models.TextField()
-    pubdate = models.DateTimeField()
-
-    def __str__(self):
-        return self.keywords, self.result_url, self.result_doi, self.pubdate
-
-
-@python_2_unicode_compatible
-class SearchArXiv(models.Model):
-
-    keywords = models.TextField()
-    result_url = models.TextField()
-    result_doi = models.TextField()
-    pubdate = models.DateTimeField()
-
-    def __str__(self):
-        return self.keywords, self.result_url, self.result_doi, self.pubdate
+# probably will migrate this. no model creation for now
+# @python_2_unicode_compatible
+# class Journals(models.Model):
+#
+#     name = models.TextField()
+#     minor_subject = models.TextField() # e.g. political science
+#     major_subject = models.TextField() # e.g. science, humanities
+#
+#     def __str__(self):
+#         return self.name, self.minor_subject, self.major_subject

@@ -1,8 +1,14 @@
+from django.utils.dateparse import parse_datetime
+
+from doi_tools import DOITools
+from models import SearchResults
+
 import feedparser
 import requests
 
 
-class arXiv(object):
+
+class ArXiv(object):
 
     def __init__(self, keywords):
         self.keywords = keywords
@@ -21,7 +27,7 @@ class arXiv(object):
             url = i.get('link')
             title = i.get('title')
             dateall = str(i.get('published'))
-            date = dateall[:10]
+            date = parse_datetime(dateall)
             result = {
                         'type': 'journal-article',
                         'date': date,
@@ -33,6 +39,16 @@ class arXiv(object):
                 continue
             else:
                 self.results.append(result)
+                doit = DOITools(url).extract_from_url()
+                commit = SearchResults(
+                                        provider='crossref',
+                                        keywords=self.keywords,
+                                        title=title,
+                                        url=url,
+                                        doi=doit,
+                                        pubdate=date
+                        )
+                commit.save()
         return self.results
 
 

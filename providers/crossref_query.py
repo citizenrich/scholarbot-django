@@ -1,6 +1,9 @@
+from django.utils.dateparse import parse_datetime
+
+from models import SearchResults
+
 import requests
 import json
-# import urllib
 
 
 class CrossRef(object):
@@ -18,32 +21,20 @@ class CrossRef(object):
         self.url = ''
 
     def getcrossref(self):
-        # addurl = urllib.pathname2url(keywords) #alternative approach to building query.
         payload = {
                     'query.title': self.keywords,
                     'filter': 'type:{bdmj},from-pub-date:{date}'.format(bdmj=self.cat, date=self.since),
                     'rows': self.limit
                 }
-
-        # payload = {
-        #             'query.title': '\"{key}\"'.format(key = addurl),
-        #             'filter': 'type:{bdmj},from-pub-date:{date}'.format(bdmj=cat, date=since),
-        #             'rows': 20
-        #         }
         x = requests.get(self.base, params=payload)
         self.url = x.url
         xdict = x.json()
         for i in xdict.get('message').get('items'):
             url = i.get('URL')
             title = i.get('title')[0]
-            # for books, but not really needed otherwise
-            # try:
-            #     subtitle  = i.get('subtitle')[0]
-            #     fulltitle = title + ': ' + subtitle
-            # except:
-            #     fulltitle = title
+            doi = i.get('DOI')
             dateall = str(i.get('deposited').get('date-time'))
-            date = dateall[:10]
+            date = parse_datetime(dateall)
             typeof = i.get('type')
             result = {
                         'type': typeof,
@@ -56,6 +47,15 @@ class CrossRef(object):
                 continue
             else:
                 self.results.append(result)
+                commit = SearchResults(
+                                        provider='crossref',
+                                        keywords=self.keywords,
+                                        title=title,
+                                        url=url,
+                                        doi=doi,
+                                        pubdate=date
+                        )
+                commit.save()
         return self.results
 
 # tests
