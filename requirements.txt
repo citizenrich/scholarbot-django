@@ -1,7 +1,9 @@
-dj-database-url
 Django
+dj-database-url
 gunicorn
 psycopg2
 whitenoise
+celery
+redis
 requests
 feedparser

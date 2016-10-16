@@ -1,6 +1,8 @@
 from django.utils.dateparse import parse_datetime
 
-from models import SearchResults
+from journaltoc_query import JournalTOC
+from crossref_query import CrossRef
+from arxiv_query import ArXiv
 
 import requests
 import json
@@ -35,26 +37,19 @@ class CrossRef(object):
             doi = i.get('DOI')
             dateall = str(i.get('deposited').get('date-time'))
             date = parse_datetime(dateall)
-            typeof = i.get('type')
+            typeof = i.get('type') # clean this up later, to match choices in models
             result = {
-                        'type': typeof,
+                        'provider': 1,
+                        'medium': 1,
                         'date': date,
                         'title': title,
-                        'url': url,
-                        'source': 'crossref'
+                        'url': url
                     }  # fulltitle for title issue
             if self.keywords.lower() not in result.get('title').lower():
                 continue
             else:
                 self.results.append(result)
-                commit = SearchResults(
-                                        provider='crossref',
-                                        keywords=self.keywords,
-                                        title=title,
-                                        url=url,
-                                        doi=doi,
-                                        pubdate=date
-                        )
+                commit = SearchResults(keywords=self.keywords, doi=doit, **result)
                 commit.save()
         return self.results
 
