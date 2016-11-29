@@ -1,0 +1,22 @@
+{
+    "intents": [
+        {
+            "intent": "GetLatest",
+            "slots": [
+                {
+                    "name": "keyword",
+                    "type": "KEYWORD"
+                }
+            ]
+        },
+        {
+            "intent": "AMAZON.HelpIntent"
+        },
+        {
+            "intent": "AMAZON.StopIntent"
+        },
+        {
+            "intent": "AMAZON.CancelIntent"
+        }
+    ]
+}

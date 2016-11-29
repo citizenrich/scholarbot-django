@@ -1,5 +1,8 @@
-from dotenv import load_dotenv, find_dotenv
-load_dotenv(find_dotenv())
+try:
+    from dotenv import load_dotenv, find_dotenv
+    load_dotenv(find_dotenv())
+except:
+    pass
 
 import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "scholarbot.settings")

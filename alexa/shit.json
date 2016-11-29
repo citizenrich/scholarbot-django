@@ -1,0 +1,29 @@
+{
+  "session": {
+    "sessionId": "SessionId.2cb33f2d-0616-4230-bd77-a657ca0bfcf5",
+    "application": {
+      "applicationId": "amzn1.ask.skill.e199441c-fc18-471e-bf38-1115481b3ec7"
+    },
+    "attributes": {},
+    "user": {
+      "userId": "amzn1.ask.account.AHDXZGJCEA4DFKPNRXJ3BLYMAGVD7VESZGE5N3WQW4CN4U6I3E4R6VNIROELQP6I4G2EV456RCGNHO6FC3Z6BCFLQRJUZWSQNNE7MQ6RHKWZIMNW5XK7K5X3JMDWLQGLXA3FLEJGESCGVARVPDEKWUJPOWK65RQEGPVDQ2ESVVV4ESYB2L2YCT3I7M7MTNOVDWQROY5GKBSUKUY"
+    },
+    "new": true
+  },
+  "request": {
+    "type": "IntentRequest",
+    "requestId": "EdwRequestId.f1d2df8d-0c5c-4304-82c5-5e811cf3e5e4",
+    "locale": "en-US",
+    "timestamp": "2016-11-29T06:49:46Z",
+    "intent": {
+      "name": "GetLatest",
+      "slots": {
+        "keyword": {
+          "name": "keyword",
+          "value": "Putin"
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

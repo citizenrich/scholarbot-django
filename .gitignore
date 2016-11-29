@@ -1,7 +1,7 @@
 .env
 __pycache__/
 *.py[cod]
-staticfiles/
+staticfiles
 *.DS_Store
 *.sqlite3
 *.ipynb

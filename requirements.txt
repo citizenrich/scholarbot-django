@@ -5,6 +5,6 @@ psycopg2
 whitenoise
 celery
 redis
-dotenv
 requests
 feedparser
+python-dotenv

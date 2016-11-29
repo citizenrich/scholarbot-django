@@ -2,8 +2,11 @@
 import os
 import sys
 
-from dotenv import load_dotenv, find_dotenv
-load_dotenv(find_dotenv())
+try:
+    from dotenv import load_dotenv, find_dotenv
+    load_dotenv(find_dotenv())
+except:
+    pass
 
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "scholarbot.settings")
