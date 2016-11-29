@@ -1,0 +1,6 @@
+# this file makes git track the empty directory. necessary for deployment builds. if needed, use template below.
+
+# Ignore everything in this directory
+# *
+# Except this file
+# !.gitignore
