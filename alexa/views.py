@@ -29,7 +29,9 @@ class Alexa(View):
 
 
     def post(self, request):
-        intent = request.body['request']['intent']['name']
+        body = request.body.decode('utf-8')
+        body_json = json.loads(body_unicode)
+        intent = body_json['request']['intent']['name']
         print(intent)
         # if intent == 'GetLatest':
         # keyword = request.POST['request']['intent']['slots']['keyword']
