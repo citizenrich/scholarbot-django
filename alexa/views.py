@@ -14,7 +14,7 @@ class Index(View):
         return HttpResponse('yo yo')
 
 
-class Alexa(View):
+class AlexaTest(View):
 
     def __init__(self):
         self.testing = {
