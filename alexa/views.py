@@ -24,7 +24,7 @@ class Alexa(View):
                 "outputSpeech": {"type": "PlainText", "text": "This is a big, fat test. Hi Rick."},
                 "card": {"type": "Simple", "title": "Heyo", "content": "Hi Richard. You're a great programmer."},
                 "reprompt": {"outputSpeech": {"type": "PlainText", "text": "Can I help you with anything else?"}},
-                "shouldEndSession": "false"}
+                "shouldEndSession": "true"}
         }
 
 
