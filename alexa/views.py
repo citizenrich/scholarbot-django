@@ -19,35 +19,17 @@ class Alexa(View):
     def __init__(self):
         self.testing = {
               "version": "1.0",
-              "sessionAttributes": {
-                "supportedHoriscopePeriods": {
-                  "test": 'test',
-                }
-              },
+              "sessionAttributes": {"session": "first question"},
               "response": {
-                "outputSpeech": {
-                  "type": "PlainText",
-                  "text": "This is a big, fat test. Hi Rick."
-                },
-                "card": {
-                  "type": "Simple",
-                  "title": "Heyo",
-                  "content": "Hi Richard. You're a great programmer."
-                },
-                "reprompt": {
-                  "outputSpeech": {
-                    "type": "PlainText",
-                    "text": "Can I help you with anything else?"
-                  }
-                },
-                "shouldEndSession": 'false'
-              }
-            }
+                "outputSpeech": {"type": "PlainText", "text": "This is a big, fat test. Hi Rick."},
+                "card": {"type": "Simple", "title": "Heyo", "content": "Hi Richard. You're a great programmer."},
+                "reprompt": {"outputSpeech": {"type": "PlainText", "text": "Can I help you with anything else?"}},
+                "shouldEndSession": "false"}
+        }
 
 
     def post(self, request):
-        intent = request.body
-        # intent = request.POST['request'] # ['intent']['name']
+        intent = request.body['request']['intent']['name']
         print(intent)
         # if intent == 'GetLatest':
         # keyword = request.POST['request']['intent']['slots']['keyword']

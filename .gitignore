@@ -8,3 +8,4 @@ staticfiles
 *.ipynb_checkpoints
 outtakes.py
 celerybeat*
+shit.json
