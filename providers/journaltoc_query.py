@@ -1,14 +1,11 @@
 from django.utils.dateparse import parse_datetime
 from django.utils import timezone
 
-from journaltoc_query import JournalTOC
-from crossref_query import CrossRef
-from arxiv_query import ArXiv
+from models import *
 from doi_tools import DOITools
 
 import feedparser
 import requests
-
 
 
 class JournalTOC(object):
@@ -17,16 +14,15 @@ class JournalTOC(object):
     no category, only articles, to=limit, max 300; no timeframe, only recent
     """
 
-    base = 'http://www.journaltocs.ac.uk/api/articles/'
-    limit = 10
-
     def __init__(self, keywords):
         self.keywords = keywords
         self.results = []
+        self.base = 'http://www.journaltocs.ac.uk/api/articles/'
+        self.limit = 10
 
     def getjournaltoc(self):
-        params = {'to': limit}
-        url0 = '%s%s' % (base, self.keywords)
+        params = {'to': self.limit}
+        url0 = '%s%s' % (self.base, self.keywords)
         response = requests.get(url0, params=params)
         self.url = response.url
         rssdoc = feedparser.parse(response.content)
@@ -51,17 +47,13 @@ class JournalTOC(object):
                         'url': url,
                         'doi': doit                    }
             self.results.append(result)
-        # bulk write to results only db
-        bravo = Results.objects.bulk_create([Entry(provider=x['provider'],
-                                                    medium=x['medium'],
-                                                    date=x['date'],
-                                                    title=x['title'],
-                                                    url=x['url'],
-                                                    doi=x['doi']) for x in results])
-        bravo.save()
-        # bulk write to results/keywords db e.g. bravo[0].id
-        charlie = ResultsKeywords.objects.bulk_create([Entry(resultid=x.pk, keywordid=alpha.pk) for x in bravo])
-        charlie.save()
+            bravo = Results(provider=2, medium=1, date=date, title=title, url=url, doi=doit)
+            bravo.save()
+            charlie = ResultsKeywords(resultid=bravo, keywordid=alpha)
+        # bulk write to results only db is not working.
+        # bravo = Results.objects.bulk_create([Results(provider=x['provider'], medium=x['medium'], date=x['date'], title=x['title'], url=x['url'], doi=x['doi']) for x in self.results])
+        # bulk write to results/keywords db e.g. bravo[0].id is not working
+        # charlie = ResultsKeywords.objects.bulk_create([ResultsKeywords(resultid=x.pk, keywordid=alpha.pk) for x in bravo])
         return self.results
 
 

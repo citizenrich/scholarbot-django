@@ -4,9 +4,9 @@ from django.conf import settings
 
 from celery import shared_task
 
-from arxiv_query import ArXiv
-from crossref_query import CrossRef
-from journaltoc_query import JournalTOC
+from .arxiv_query import ArXiv
+from .crossref_query import CrossRef
+from .journaltoc_query import JournalTOC
 
 
 @shared_task(name='jtoc_only')

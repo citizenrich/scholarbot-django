@@ -51,11 +51,26 @@ class Contacts(models.Model):
     num_requests = models.IntegerField()
     last_request = models.DateTimeField()
 
+    search1 = models.TextField(null=True, blank=True)
+    search2 = models.TextField(null=True, blank=True)
+    search3 = models.TextField(null=True, blank=True)
+    search1_date = models.DateTimeField(null=True, blank=True)
+    search2_date = models.DateTimeField(null=True, blank=True)
+    search3_date = models.DateTimeField(null=True, blank=True)
+
     def __str__(self):
         return (self.id,
                 self.external_id,
                 self.num_requests,
-                self.last_request)
+                self.last_request,
+                self.subject_pref,
+                self.journal_pref,
+                self.search1,
+                self.search2,
+                self.search3,
+                self.search1_date,
+                self.search2_date,
+                self.search3_date)
 
 
 @python_2_unicode_compatible

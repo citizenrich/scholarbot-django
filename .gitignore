@@ -1,5 +1,10 @@
 .env
-*.pyc
-staticfiles
+__pycache__/
+*.py[cod]
+staticfiles/
 *.DS_Store
 *.sqlite3
+*.ipynb
+*.ipynb_checkpoints
+outtakes.py
+celerybeat*

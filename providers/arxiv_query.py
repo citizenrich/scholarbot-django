@@ -1,8 +1,5 @@
 from django.utils.dateparse import parse_datetime
 
-from journaltoc_query import JournalTOC
-from crossref_query import CrossRef
-from arxiv_query import ArXiv
 from doi_tools import DOITools
 
 import feedparser

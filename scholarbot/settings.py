@@ -1,34 +1,12 @@
-"""
-Django settings for scholarbot project on Heroku. Fore more info, see:
-https://github.com/heroku/heroku-django-template
-
-For more information on this file, see
-https://docs.djangoproject.com/en/1.9/topics/settings/
-
-For the full list of settings and their values, see
-https://docs.djangoproject.com/en/1.9/ref/settings/
-"""
-
 import os
 import dj_database_url
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SCHOLARBOT_SECRET_KEY')
-
-# SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = False
-
-DEBUG = os.environ.get('DEBUG', 'on') == 'on'
-
-# Application definition
+DEBUG = os.environ.get('DEBUG', False)
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -36,13 +14,13 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    # Disable Django's own staticfiles handling in favour of WhiteNoise, for
-    # greater consistency between gunicorn and `./manage.py runserver`. See:
-    # http://whitenoise.evans.io/en/stable/django.html#using-whitenoise-in-development
+    # Disable Django's own staticfiles handling in favour of WhiteNoise
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
+    'django_extensions',
     'providers',
-    'v1'
+    'v1',
+    'alexa'
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -62,7 +40,7 @@ ROOT_URLCONF = 'scholarbot.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -78,31 +56,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'scholarbot.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/1.9/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
-
-# Update database configuration with $DATABASE_URL.
-
 DATABASES = {'default': dj_database_url.config()}
-
-if 'ALEXA_TWILIO_DATABASE_URL' in os.environ:
-    db_from_env = dj_database_url.config(env='SCHOLARBOT_DATABASE_URL', conn_max_age=500)
-else:
-    db_from_env = dj_database_url.config(conn_max_age=500)
-
+db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
 
 
-# Celery settings
-BROKER_URL = os.environ.get('REDIS_URL')
+# Celery settings: must be upper-cased and start with CELERY_
+CELERY_BROKER_URL = os.environ.get('REDIS_URL')
 CELERY_RESULT_BACKEND = os.environ.get('REDIS_URL')
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
@@ -125,8 +85,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Internationalization
-# https://docs.djangoproject.com/en/1.9/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
@@ -134,27 +92,15 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-# Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-# Allow all host headers
 ALLOWED_HOSTS = ['*']
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
 STATIC_URL = '/static/'
 
-# Extra places for collectstatic to find static files.
 STATICFILES_DIRS = [
     os.path.join(PROJECT_ROOT, 'static'),
 ]
 
-# Simplified static file serving.
-# https://warehouse.python.org/project/whitenoise/
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-# -----------------------------------------------------------------------------------
-# 3rd Party Integration Keys
-# -----------------------------------------------------------------------------------
