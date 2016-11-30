@@ -27,9 +27,13 @@ class CrossRef(object):
         x = requests.get(self.base, params=payload)
         self.url = x.url
         xdict = x.json()
+        rsslist = xdict.get('message').get('items')
+        # cleaning out empty dates and keywords not in title
+        rsslist[:] = [x for x in rsslist if not str(x.get('deposited').get('date-time')) == 'None']
+        rsslist[:] = [x for x in rsslist if self.keywords.lower() in x.get('title')[0].lower()]
         for i in xdict.get('message').get('items'):
             url = i.get('URL')
-            title = i.get('title')[0]
+            title = i.get('title')[0] #careful, get first title
             doi = i.get('DOI')
             dateall = str(i.get('deposited').get('date-time'))
             date = parse_datetime(dateall)
@@ -41,15 +45,11 @@ class CrossRef(object):
                         'title': title,
                         'url': url
                     }  # fulltitle for title issue
-            if self.keywords.lower() not in result.get('title').lower():
-                continue
-            else:
-                self.results.append(result)
-                commit = SearchResults(keywords=self.keywords, doi=doit, **result)
-                commit.save()
+            self.results.append(result)
         return self.results
 
-# tests
+
+
 # stuff = 'journal-article'
 # when = '2015-01'
 # test = 'cold war'

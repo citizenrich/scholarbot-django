@@ -22,6 +22,10 @@ class ArXiv(object):
         response = requests.get(self.base, params=params)
         self.url = response.url
         rssdoc = feedparser.parse(response.content)
+        rsslist = rssdoc.get('entries')
+        # cleaning out empty dates and keywords not in title
+        rsslist[:] = [x for x in rsslist if not str(x.get('date')) == 'None']
+        rsslist[:] = [x for x in rsslist if self.keywords.lower() in x.get('title').lower()]
         for i in rssdoc.get('entries'):
             url = i.get('link')
             title = i.get('title')
@@ -34,19 +38,12 @@ class ArXiv(object):
                         'date': date,
                         'title': title,
                         'url': url,
+                        'doi': doit
                 }
-            if self.keywords.lower() not in result.get('title').lower():
-                continue
-            else:
-                self.results.append(result)
-                doit = DOITools(url).extract_from_url()
-                commit = SearchResults(keywords=self.keywords, doi=doit, provider=1, **result)
-                commit.save()
+            self.results.append(result)
         return self.results
 
 
-# tests
 # test = 'Neural networks'
-# z = arXiv(test)
+# z = ArXiv(test)
 # print z.getarxiv()
-# print z.url, z.keywords, z.results
