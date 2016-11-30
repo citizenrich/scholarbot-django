@@ -27,7 +27,6 @@ class AlexaTest(View):
                 "shouldEndSession": "true"}
         }
 
-
     def post(self, request):
         body_str = request.body.decode('utf-8')
         body_json = json.loads(body_str)
@@ -36,3 +35,38 @@ class AlexaTest(View):
         # if intent == 'GetLatest':
         # keyword = request.POST['request']['intent']['slots']['keyword']
         return JsonResponse(self.testing)
+
+class AlexaProd(View):
+
+    def __init__(self):
+
+        self.empty = {
+              "version": "1.0",
+              "response": {
+                "outputSpeech": {"type": "PlainText", "text": "Please reply with a key word to search."},
+                "card": {"type": "Simple", "title": "Please reply with a keyword", "content": "Please reply with a keyword to search."},
+                "shouldEndSession": "false"}
+        }
+        self.template = {
+              "version": "1.0",
+              "sessionAttributes": {"session": "first question"},
+              "response": {
+                "outputSpeech": {"type": "PlainText", "text": ""},
+                "card": {"type": "Simple", "title": "", "content": ""},
+                "reprompt": {"outputSpeech": {"type": "PlainText", "text": ""}},
+                "shouldEndSession": "true"}
+        }
+
+    def post(self, request):
+        body_str = request.body.decode('utf-8')
+        body_json = json.loads(body_str)
+        intent = body_json['request']['intent']['name']
+        if intent == 'LaunchRequest':
+            return JsonResponse(self.empty)
+        elif intent == 'GetLatest':
+            keyword = body_json['request']['intent']['slots']['keyword']
+            self.template['response']['outputSpeech']['text'] = 'This is a placeholder for a real interaction.'
+            self.template['response']['card']['title'] = 'This is a placeholder.'
+            self.template['response']['card']['content'] = 'This is a placeholder.'
+            return JsonResponse(self.template)
+        # elif intent == 'SessionEndedRequest'
