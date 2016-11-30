@@ -32,8 +32,6 @@ class AlexaTest(View):
         body_json = json.loads(body_str)
         intent = body_json['request']['intent']['name']
         print(intent)
-        # if intent == 'GetLatest':
-        # keyword = request.POST['request']['intent']['slots']['keyword']
         return JsonResponse(self.testing)
 
 class AlexaProd(View):
@@ -43,8 +41,8 @@ class AlexaProd(View):
         self.empty = {
               "version": "1.0",
               "response": {
-                "outputSpeech": {"type": "PlainText", "text": "Please reply with a key word to search."},
-                "card": {"type": "Simple", "title": "Please reply with a keyword", "content": "Please reply with a keyword to search."},
+                "outputSpeech": {"type": "PlainText", "text": "Reply with a key word to search."},
+                "card": {"type": "Simple", "title": "Reply with a keyword", "content": "Reply with a keyword."},
                 "shouldEndSession": "false"}
         }
         self.template = {
