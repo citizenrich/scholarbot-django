@@ -1,6 +1,7 @@
 import re
 import urllib
-import urlparse
+# import urlparse <- python2
+import urllib.parse
 
 
 class DOITools(object):

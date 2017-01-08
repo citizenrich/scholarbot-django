@@ -1,6 +1,6 @@
 from django.utils.dateparse import parse_datetime
 
-from doi_tools import DOITools
+from .doi_tools import DOITools
 
 import feedparser
 import requests

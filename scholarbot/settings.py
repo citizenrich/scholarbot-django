@@ -18,9 +18,11 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'django_extensions',
+    'rest_framework',
     'providers',
     'v1',
-    'alexa'
+    'alexa',
+    'custom',
 ]
 
 MIDDLEWARE_CLASSES = [

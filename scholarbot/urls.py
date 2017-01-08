@@ -20,4 +20,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^v1/', include('v1.urls')),
     url(r'^alexa/', include('alexa.urls')),
+    url(r'^', include('custom.urls')),
 ]

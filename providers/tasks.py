@@ -1,4 +1,5 @@
-from __future__ import absolute_import #for celery
+#probably add database reads, writes here instead of in providers
+from __future__ import absolute_import, unicode_literals #absolute_import is for celery
 
 from django.conf import settings
 
@@ -20,3 +21,17 @@ def jtoc_only(keywords):
 @shared_task(name='arxiv_only')
 def arxiv_only(keywords):
     ArXiv(keywords=keywords).getarxiv()
+
+
+
+@shared_task
+def add(x, y):
+    return x + y
+
+@shared_task
+def mul(x, y):
+    return x * y
+
+@shared_task
+def xsum(numbers):
+    return sum(numbers)

@@ -1,7 +1,10 @@
 from django.utils.dateparse import parse_datetime
 from django.utils import timezone
 
-from doi_tools import DOITools
+# from time import mktime
+# from datetime import datetime
+
+from .doi_tools import DOITools
 
 import feedparser
 import requests
@@ -27,14 +30,14 @@ class JournalTOC(object):
         rssdoc = feedparser.parse(response.content)
         rsslist = rssdoc.get('entries')
         # cleaning out empty dates and keywords not in title
-        rsslist[:] = [x for x in rsslist if not str(x.get('date')) == 'None']
+        rsslist[:] = [x for x in rsslist if x.get('updated_parsed')] # field apparently sometimes doesnt exist
+        rsslist[:] = [x for x in rsslist if str(x.get('updated_parsed')) is not None]
         rsslist[:] = [x for x in rsslist if self.keywords.lower() in x.get('title').lower()]
         for i in rsslist:
             url = i.get('link')
             title = i.get('title')
             identifier = i.get('identifier')
-            dateall = str(i.get('date'))
-            date = parse_datetime(dateall)
+            date = datetime.fromtimestamp(mktime(i.get('updated_parsed')))
             doit = DOITools(url).extract_from_url()
             result = {'provider': 2,
                         'medium': 1,
@@ -49,7 +52,6 @@ class JournalTOC(object):
 
 
 
-# test = 'China'
+# test = 'Romania'
 # z = JournalTOC(test)
 # print z.getjournaltoc()
-# print z.url, z.keywords
