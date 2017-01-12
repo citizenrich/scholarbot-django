@@ -11,7 +11,6 @@ from providers.arxiv_query import ArXiv
 
 # from providers.services import SearchOnly <- wiped this out
 
-
 def index(request):
     return render(request, 'index.html')
 
