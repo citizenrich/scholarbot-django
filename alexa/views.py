@@ -21,9 +21,9 @@ class AlexaTest(View):
               "version": "1.0",
               "sessionAttributes": {"session": "first question"},
               "response": {
-                "outputSpeech": {"type": "PlainText", "text": "This is a big, fat test. Hi Rick."},
-                "card": {"type": "Simple", "title": "Heyo", "content": "Hi Richard. You're a great programmer."},
-                "reprompt": {"outputSpeech": {"type": "PlainText", "text": "Can I help you with anything else?"}},
+                "outputSpeech": {"type": "PlainText", "text": "This is a test of the Alexa Scholar Bot service."},
+                "card": {"type": "Simple", "title": "Heyo", "content": "This is a test of the Alexa Scholar Bot service."},
+                "reprompt": {"outputSpeech": {"type": "PlainText", "text": "Was this the bot reply you expected?"}},
                 "shouldEndSession": "true"}
         }
 
